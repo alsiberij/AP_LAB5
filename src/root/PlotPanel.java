@@ -74,5 +74,11 @@ public class PlotPanel extends JPanel {
         return -1;
     }
 
+    protected Point2D.Double shiftPoint(Point2D.Double source, double deltaX, double deltaY) {
+        Point2D.Double result = new Point2D.Double();
+        result.setLocation(source.getX() + deltaX, source.getY() + deltaY);
+        return result;
+    }
+
 
 }
