@@ -3,6 +3,8 @@ package root;
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
+import java.io.*;
+import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
 
@@ -37,6 +39,30 @@ public class MainFrame extends JFrame {
     private JMenuItem showMarkersMI;
     private PlotPanel display = new PlotPanel();
     private boolean fileLoaded = false;
+
+    protected void openFile(File selectedFile) {
+        try {
+            DataInputStream in = new DataInputStream(new FileInputStream(selectedFile));
+            ArrayList<Double[]> graphicsData = new ArrayList<Double[]>(50);
+            while (in.available() > 0) {
+                Double x = in.readDouble();
+                Double y = in.readDouble();
+                graphicsData.add(new Double[]{x, y});
+            }
+            if (graphicsData.size() > 0) {
+                this.fileLoaded = true;
+                this.resetGraphicsMenuItem.setEnabled(true);
+                saveMenuItem.setEnabled(true);
+                this.display.displayGraphics(graphicsData);
+            }
+        }
+        catch (FileNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Файл не найден", "Ошибка", JOptionPane.WARNING_MESSAGE);
+        }
+        catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Ошибка чтения", "Ошибка", JOptionPane.WARNING_MESSAGE);
+        }
+    }
 
 
 }
