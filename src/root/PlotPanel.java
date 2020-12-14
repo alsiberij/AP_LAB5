@@ -2,6 +2,9 @@ package root;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
@@ -9,6 +12,96 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class PlotPanel extends JPanel {
+
+    public class MouseHandler extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent ev) {
+            if (ev.getButton() == 3) {
+                if (PlotPanel.this.undoHistory.size() > 0) {
+                    PlotPanel.this.viewport = PlotPanel.this.undoHistory.get(PlotPanel.this.undoHistory.size() - 1);
+                    PlotPanel.this.undoHistory.remove(PlotPanel.this.undoHistory.size() - 1);
+                } else {
+                    PlotPanel.this.zoomToRegion(PlotPanel.this.minX, PlotPanel.this.maxY, PlotPanel.this.maxX, PlotPanel.this.minY);
+                }
+                PlotPanel.this.repaint();
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent ev) {
+            if (ev.getButton() != 1) {
+                return;
+            }
+            PlotPanel.this.selectedMarker = PlotPanel.this.findSelectedPoint(ev.getX(), ev.getY());
+            PlotPanel.this.originalPoint = PlotPanel.this.translatePointToXY(ev.getX(), ev.getY());
+            if (PlotPanel.this.selectedMarker >= 0) {
+                PlotPanel.this.changeMode = true;
+                PlotPanel.this.setCursor(Cursor.getPredefinedCursor(8));
+            } else {
+                PlotPanel.this.scaleMode = true;
+                PlotPanel.this.setCursor(Cursor.getPredefinedCursor(5));
+                PlotPanel.this.selectionRect.setFrame(ev.getX(), ev.getY(), 1.0, 1.0);
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent ev) {
+            if (ev.getButton() != 1) {
+                return;
+            }
+            PlotPanel.this.setCursor(Cursor.getPredefinedCursor(0));
+            if (PlotPanel.this.changeMode) {
+                PlotPanel.this.changeMode = false;
+            } else {
+                PlotPanel.this.scaleMode = false;
+                double[] finalPoint = PlotPanel.this.translatePointToXY(ev.getX(), ev.getY());
+                PlotPanel.this.undoHistory.add(PlotPanel.this.viewport);
+                PlotPanel.this.viewport = new double[2][2];
+                PlotPanel.this.zoomToRegion(PlotPanel.this.originalPoint[0], PlotPanel.this.originalPoint[1], finalPoint[0], finalPoint[1]);
+                PlotPanel.this.repaint();
+            }
+        }
+    }
+
+    public class MouseMotionHandler implements MouseMotionListener {
+        @Override
+        public void mouseMoved(MouseEvent ev) {
+            PlotPanel.this.selectedMarker = PlotPanel.this.findSelectedPoint(ev.getX(), ev.getY());
+            if (PlotPanel.this.selectedMarker >= 0) {
+                PlotPanel.this.setCursor(Cursor.getPredefinedCursor(8));
+            } else {
+                PlotPanel.this.setCursor(Cursor.getPredefinedCursor(0));
+            }
+            PlotPanel.this.repaint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent ev) {
+            if (PlotPanel.this.changeMode) {
+                double[] currentPoint = PlotPanel.this.translatePointToXY(ev.getX(), ev.getY());
+                double newY = ((Double[])PlotPanel.this.graphicsData.get(PlotPanel.this.selectedMarker))[1] + (currentPoint[1] - ((Double[])PlotPanel.this.graphicsData.get(PlotPanel.this.selectedMarker))[1]);
+                if (newY > PlotPanel.this.viewport[0][1]) {
+                    newY = PlotPanel.this.viewport[0][1];
+                }
+                if (newY < PlotPanel.this.viewport[1][1]) {
+                    newY = PlotPanel.this.viewport[1][1];
+                }
+                ((PlotPanel.this).graphicsData.get((int)((PlotPanel)PlotPanel.this).selectedMarker))[1] = newY;
+                PlotPanel.this.repaint();
+            } else {
+                double height;
+                double width = (double)ev.getX() - PlotPanel.this.selectionRect.getX();
+                if (width < 5.0) {
+                    width = 5.0;
+                }
+                if ((height = (double)ev.getY() - PlotPanel.this.selectionRect.getY()) < 5.0) {
+                    height = 5.0;
+                }
+                PlotPanel.this.selectionRect.setFrame(PlotPanel.this.selectionRect.getX(), PlotPanel.this.selectionRect.getY(), width, height);
+                PlotPanel.this.repaint();
+            }
+        }
+    }
 
     private ArrayList<Double[]> graphicsData;
     private ArrayList<Double[]> originalData;
