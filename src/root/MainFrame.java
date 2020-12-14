@@ -64,5 +64,19 @@ public class MainFrame extends JFrame {
         }
     }
 
+    void saveToBin(File file) {
+        try {
+            ArrayList<Double[]> dataTable = display.getGraphicsData();
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(file));
+            for (int i = 0; i < dataTable.size(); i++) {
+                out.writeDouble(dataTable.get(i)[0]);
+                out.writeDouble(dataTable.get(i)[1]);
+            }
+            out.close();
+        } catch (Exception ignore) {
+
+        }
+    }
+
 
 }
