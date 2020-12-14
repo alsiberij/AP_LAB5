@@ -80,5 +80,19 @@ public class PlotPanel extends JPanel {
         return result;
     }
 
+    public ArrayList<Double[]> getGraphicsData() {
+        return graphicsData;
+    }
+
+    public void setShowAxis(boolean showAxis) {
+        this.showAxis = showAxis;
+        repaint();
+    }
+
+    public void setShowMarkers(boolean showMarkers) {
+        this.showMarkers = showMarkers;
+        repaint();
+    }
+
 
 }
