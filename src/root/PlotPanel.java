@@ -139,8 +139,8 @@ public class PlotPanel extends JPanel {
         this.axisFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);
         this.labelsFont = new Font(Font.SERIF, Font.ITALIC, 11);
         formatter.setMaximumFractionDigits(3);
-        //this.addMouseListener(new MouseHandler());
-        //this.addMouseMotionListener(new MouseMotionHandler());
+        this.addMouseListener(new MouseHandler());
+        this.addMouseMotionListener(new MouseMotionHandler());
     }
 
     protected Point2D.Double translateXYtoPoint(double x, double y) {
