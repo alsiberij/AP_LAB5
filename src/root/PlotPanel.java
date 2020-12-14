@@ -34,5 +34,18 @@ public class PlotPanel extends JPanel {
     private boolean showAxis = true;
     private boolean showMarkers = false;
 
+    public PlotPanel() {
+        this.setBackground(Color.WHITE);
+        this.axisStroke = new BasicStroke(2.0f, 0, 0, 10.0f, null, 0.0f);
+        this.gridStroke = new BasicStroke(1.0f, 0, 0, 10.0f, new float[]{2.0f, 5.0f}, 0.0f);
+        this.markerStroke = new BasicStroke(1.5f, 0, 0, 10.0f, null, 0.0f);
+        this.selectionStroke = new BasicStroke(3.0f, 0, 0, 10.0f, new float[]{10.0f, 5.0f}, 0.0f);
+        this.axisFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+        this.labelsFont = new Font(Font.SERIF, Font.ITALIC, 11);
+        formatter.setMaximumFractionDigits(3);
+        //this.addMouseListener(new MouseHandler());
+        //this.addMouseMotionListener(new MouseMotionHandler());
+    }
+
 
 }
