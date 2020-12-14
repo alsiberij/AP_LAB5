@@ -58,5 +58,21 @@ public class PlotPanel extends JPanel {
         return new double[]{this.viewport[0][0] + (double)x / this.scaleX, this.viewport[0][1] - (double)y / this.scaleY};
     }
 
+    protected int findSelectedPoint(int x, int y) {
+        if (this.graphicsData == null) {
+            return -1;
+        }
+        int pos = 0;
+        for (Double[] point : this.graphicsData) {
+            Point2D.Double screenPoint = this.translateXYtoPoint(point[0], point[1]);
+            double distance = (screenPoint.getX() - (double)x) * (screenPoint.getX() - (double)x) + (screenPoint.getY() - (double)y) * (screenPoint.getY() - (double)y);
+            if (distance < 100.0) {
+                return pos;
+            }
+            ++pos;
+        }
+        return -1;
+    }
+
 
 }
