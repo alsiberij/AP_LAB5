@@ -54,5 +54,9 @@ public class PlotPanel extends JPanel {
         return new Point2D.Double(deltaX * this.scaleX, deltaY * this.scaleY);
     }
 
+    protected double[] translatePointToXY(int x, int y) {
+        return new double[]{this.viewport[0][0] + (double)x / this.scaleX, this.viewport[0][1] - (double)y / this.scaleY};
+    }
+
 
 }
