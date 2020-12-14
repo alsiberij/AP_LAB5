@@ -2,6 +2,7 @@ package root;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -45,6 +46,12 @@ public class PlotPanel extends JPanel {
         formatter.setMaximumFractionDigits(3);
         //this.addMouseListener(new MouseHandler());
         //this.addMouseMotionListener(new MouseMotionHandler());
+    }
+
+    protected Point2D.Double translateXYtoPoint(double x, double y) {
+        double deltaX = x - this.viewport[0][0];
+        double deltaY = this.viewport[0][1] - y;
+        return new Point2D.Double(deltaX * this.scaleX, deltaY * this.scaleY);
     }
 
 
