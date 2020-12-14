@@ -102,5 +102,25 @@ public class PlotPanel extends JPanel {
         this.repaint();
     }
 
+    public void displayGraphics(ArrayList<Double[]> graphicsData) {
+        this.graphicsData = graphicsData;
+        this.originalData = new ArrayList(graphicsData.size());
+        for (Double[] point : graphicsData) {
+            Double[] newPoint = new Double[]{point[0], point[1]};
+            this.originalData.add(newPoint);
+        }
+        this.minX = graphicsData.get(0)[0];
+        this.maxX = graphicsData.get(graphicsData.size() - 1)[0];
+        this.maxY = graphicsData.get(0)[1];
+        this.minY = this.maxY;
+        for (int i = 1; i < graphicsData.size(); ++i) {
+            if (graphicsData.get(i)[1] < this.minY) {
+                this.minY = graphicsData.get(i)[1];
+            }
+            if (!(graphicsData.get(i)[1] > this.maxY)) continue;
+            this.maxY = graphicsData.get(i)[1];
+        }
+        this.zoomToRegion(this.minX, this.maxY, this.maxX, this.minY);
+    }
 
 }
