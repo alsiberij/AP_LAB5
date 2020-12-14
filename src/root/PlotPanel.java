@@ -123,4 +123,10 @@ public class PlotPanel extends JPanel {
         this.zoomToRegion(this.minX, this.maxY, this.maxX, this.minY);
     }
 
+    public void reset() {
+        this.displayGraphics(this.originalData);
+    }
+
+
+
 }
